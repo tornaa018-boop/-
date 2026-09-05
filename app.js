@@ -39,7 +39,7 @@ const stages = [
     name: "나무 에코몬",
     emoji: "🌳",
     label: "4단계",
-    message: "건강한 나무 에코몬으로 성장했어요!"
+    message: "강인한 나무 에코몬으로 성장했어요!"
   },
   {
     minScore: 100,
@@ -186,6 +186,7 @@ function renderRecords() {
  */
 function playBounceAnimation() {
   ecomonEmoji.classList.remove("bounce");
+  ecomonEmoji.classList.remove("evolve");
 
   // 같은 애니메이션을 다시 실행할 수 있도록
   // 브라우저가 변경사항을 먼저 계산하게 합니다.
@@ -222,10 +223,30 @@ function playEvolutionAnimation() {
  */
 actionButtons.forEach(function (button) {
   button.addEventListener("click", function () {
-    statusMessage.textContent =
-      "아직 환경 실천 기능이 완성되지 않았습니다. MISSION.md를 확인하세요.";
+    const action = button.dataset.action;
+    const points = Number(button.dataset.points);
+    const previousStageIndex = getCurrentStageIndex();
 
-    // TODO: 이 부분에 환경 실천 기능을 작성하세요.
+    ecoScore += points;
+    actionCount += 1;
+
+    records.unshift({
+      action: action,
+      points: points
+    });
+
+    render();
+
+    const currentStageIndex = getCurrentStageIndex();
+
+    statusMessage.textContent =
+      `${action} 실천 완료! 에코 점수 ${points}점을 얻었습니다.`;
+
+    if (currentStageIndex !== previousStageIndex) {
+      playEvolutionAnimation();
+    } else {
+      playBounceAnimation();
+    }
   });
 });
 
